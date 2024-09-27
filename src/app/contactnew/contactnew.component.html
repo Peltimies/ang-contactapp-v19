@@ -1,0 +1,12 @@
+<div class ="topmargin">
+  <!-- Tehdään Angularin template-driven form jonka nimi on #f. Tämä on 
+ns. tavallinen Angularin lomake (toinen on reaktiivisen lomake). Bindataan 
+(ngSubmit) -event luokassa oleviin onSubmit() ja navigateToList() -metodeihin 
+eli kun lomake lähetetään, niin nämä metodit suoritetaan. Pitää muistaa lisäksi importata
+FormsModule päämoduuliin  -->
+  <form #f="ngForm" (ngSubmit)="onSubmit(f.value); navigateToList()">
+    <label>Nimi:</label><br /> <input type="text" name="name" ngModel /><br />
+    <label>Email:</label><br /> <input type="text" name="email" ngModel /><br />
+    <button class ="topmargin" type="submit">Lähetä</button>
+</form>
+</div>

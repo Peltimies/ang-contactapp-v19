@@ -1,0 +1,20 @@
+<p>
+  Haku:
+  <input type="text" (input)="searchContacts($event)" />
+  Kriteeri:
+  <select (change)="onSelect($event)">
+    @for( field of fields; track field){
+    <option value="{{ field }}">{{ field }}</option>
+    }
+  </select>
+</p>
+<!-- Valitaan hakufiltteri kriteerin arvon perusteella -->
+@if(field === 'name'){ @for( c of namefilter(); track c){
+<div class="contact">
+  <p>{{ c.name }} - {{ c.email }}</p>
+</div>
+} } @if(field === 'email'){ @for( c of emailfilter(); track c){
+<div class="contact">
+  <p>{{ c.name }} - {{ c.email }}</p>
+</div>
+} }

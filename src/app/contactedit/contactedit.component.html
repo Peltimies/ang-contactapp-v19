@@ -1,0 +1,19 @@
+<!-- Muokkaa-nappia painettaessa avautuu muokkauslomake-->
+
+  @if(editmode === true) {
+  <div class ="topmargin">
+    <form #f="ngForm" (ngSubmit)="onSubmit(f.value)">
+      <label>Nimi:</label><br /> <input type="text" name="name" [(ngModel)]="name" ngModel /><br />
+      <label>Email:</label><br /> <input type="text" name="email" [(ngModel)]="email" ngModel /><br />
+      <input type="hidden" name="id" [(ngModel)]="id" ngModel />
+      <button class ="topmargin" type="submit">Lähetä</button>
+  </form>
+  </div>
+  }
+
+  @for( c of contacts; track c){
+    <div class="contact">
+      <p>{{ c.name }} - {{ c.email }} <a (click)="edit(c)">Muokkaa</a>&nbsp;<a (click)="remove(c)">Poista</a></p>
+    </div>
+  }
+  

@@ -1,0 +1,15 @@
+.contact {
+    background-color: #D3D3D3;
+  }
+
+  a {
+    color: #808080;
+  }
+  a:hover {
+    color: #000000;
+  }
+  a { cursor: pointer; }
+
+  .topmargin {
+    margin-top: 12px;
+    }
