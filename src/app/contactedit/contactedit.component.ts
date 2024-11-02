@@ -39,8 +39,9 @@ export class ContacteditComponent implements OnInit {
       'id': formData.id,
       'name': formData.name,
       'email': formData.email,
-    // päivitetyt kontaktit haetaan uudestaan, mutta esim. map-metodilla
-    // voisi myös päivittää käyttöliittymän ilman hakua serveriltä
+    /* Heti päivityksen jälkeen suoritetaan getContacts()-metodi
+       callbackissa subscriben argumenttina. Päivittyminen tapahtuu
+       tällöin välittömästi samalla sivulla */
     }).subscribe(() => this.getContacts());
     // tyhjennetään lomakkeen kentät kun päivitys on suoritettu
     this.name = '';
