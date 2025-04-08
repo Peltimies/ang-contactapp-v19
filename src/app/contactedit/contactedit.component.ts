@@ -5,7 +5,6 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-contactedit',
-  standalone: true,
   imports: [FormsModule],
   templateUrl: './contactedit.component.html',
   styleUrls: ['./contactedit.component.css']

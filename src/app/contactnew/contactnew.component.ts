@@ -7,7 +7,6 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-contactnew',
-  standalone: true,
   imports: [FormsModule],
   templateUrl: './contactnew.component.html',
   styleUrls: ['./contactnew.component.css'],

@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ang-contactapp_v18": {
+    "ang-contactapp-v19": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -38,7 +38,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/ang-contactapp_v18",
+            "outputPath": "dist/ang-contactapp-v19",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -84,10 +84,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "ang-contactapp_v18:build:production"
+              "buildTarget": "ang-contactapp-v19:build:production"
             },
             "development": {
-              "buildTarget": "ang-contactapp_v18:build:development"
+              "buildTarget": "ang-contactapp-v19:build:development"
             }
           },
           "defaultConfiguration": "development"

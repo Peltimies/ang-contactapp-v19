@@ -11,8 +11,7 @@ import { Contact } from '../contact';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
-  selector: 'app-contactlist', 
-  standalone: true,
+  selector: 'app-contactlist',
   imports: [],
   templateUrl: './contactlist.component.html',
   styleUrl: './contactlist.component.css',
