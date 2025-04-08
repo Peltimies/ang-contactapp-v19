@@ -1,4 +1,4 @@
-// importataan tarvittavat kirjastot
+// Reaktiivinen haku listasta toteutettuna signaaleilla
 import {
   Component,
   computed,
@@ -25,7 +25,7 @@ export class ContactlistComponent {
   searchterm: WritableSignal<string> = signal('');
   // kontaktitaulukon filtteröinti nimen perusteella
   namefilter = computed(() =>
-    // taulukko saadaan signaalista metodikutsulla contactS()
+    // taulukko saadaan signaalista metodikutsulla contacts()
     this.contacts().filter((c) =>
       c.name.toLowerCase().includes(this.searchterm().toLowerCase())
     )

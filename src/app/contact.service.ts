@@ -3,7 +3,7 @@ palveluita muille rakenneosille, yleensä komponenteille. Tämä
 service välittää dataa palvelimelta Angular-sovellukseen ja toisinpäin.
 */
 // HttpClient tarvitaan asynkroniseen datan hakemiseen serveriltä ja lähettämiseen serverille
-// HttpClientModule pitää lisäksi muistaa importata päämoduuliin
+// provideHttpClient() pitää lisäksi muistaa ottaa käyttöön app.config.ts:ssä
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Contact } from './contact';
@@ -14,8 +14,7 @@ import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 /* injectable annotaatio kertoo että service voidaan injektoida komponenttiin.
- providedIn: 'root' argumenttina tekee servicestä providerin ja serviceä ei tarvitse
-enää lisätä root-moduulin (app.module.ts) providers -taulukkoon */
+ providedIn: 'root' argumenttina tekee servicestä providerin */
 @Injectable({
   providedIn: 'root'
 })
@@ -29,7 +28,7 @@ export class ContactService {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
 
-  // HttpClient -olio tuodaan konstruktorissa serviceen
+  // HttpClient-olio tuodaan konstruktorissa serviceen
   constructor(private http: HttpClient) { }
 
   // Virheenkäsittelymetodi joka palauttaa observablen
@@ -39,9 +38,9 @@ export class ContactService {
   }
 
   /* GET: getContacts() palauttaa Observablen.
-  HttpClient -olion get-metodilla haetaan Observable
+  HttpClient-olion get-metodilla haetaan Observable
   annetusta osoitteesta. Observablen tyyppi on taulukko jossa on
-  Contact -tyyppisiä olioita.
+  Contact-tyyppisiä olioita.
 
   Observable on "tarkkailtava" eli olio joka 'pushaa' datastreamia.
   Vastaanottaja tilaa 'streamin'.
