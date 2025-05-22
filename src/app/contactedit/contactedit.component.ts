@@ -16,7 +16,7 @@ export class ContacteditComponent implements OnInit {
   editmode: boolean = false; // muokkauslomake oletuksena ei näkyvissä
   name = '';
   email = '';
-  id: number = 0;
+  id: string | number = ''; // Muutettu tukemaan sekä string että number -tyyppejä Firestorea varten
   // Service otetaan käyttöön komponentin konstruktorin argumenttina (Dependency injection)
   constructor(private contactService: ContactService) {
   }
@@ -45,7 +45,7 @@ export class ContacteditComponent implements OnInit {
     // tyhjennetään lomakkeen kentät kun päivitys on suoritettu
     this.name = '';
     this.email = '';
-    this.id = 0;
+    this.id = ''; // Resetoidaan id tyhjäksi stringiksi Firestore-yhteensopivuuden vuoksi
   }
   /* Laitetaan muokkauslomake näkyviin ja laitetaan
      lomakkeelle arvot joita muokataan. Varsinainen muokkaus

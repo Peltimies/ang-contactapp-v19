@@ -5,10 +5,12 @@ sovelluksessa nämä määritykset voivat olla myös päämoduulissa ja reittimo
 */
 import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
-import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { routes } from './app.routes';
-import { InMemoryDataService } from './in-memory-data.service';
+
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+
 
 export const appConfig: ApplicationConfig = {
   // providers-taulukko sisältää sovellukselle tarjottavat palvelut
@@ -16,7 +18,15 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideHttpClient(),
     provideRouter(routes, withComponentInputBinding()),
-    // Tämä rivi poistetaan kun ryhdytään käyttämään oikeaa API:a.
-    importProvidersFrom(InMemoryWebApiModule.forRoot(InMemoryDataService, { delay: 500 })),  
+    // Firebase configuration
+    provideFirebaseApp(() => initializeApp({ 
+      projectId: "ang-firebook-pelti", 
+      appId: "1:693770805211:web:cf456315cb151c625b51fe", 
+      storageBucket: "ang-firebook-pelti.firebasestorage.app", 
+      apiKey: "AIzaSyDSE2s8wlKwxbQzqhRPuHzs_DZkugNJisY", 
+      authDomain: "ang-firebook-pelti.firebaseapp.com", 
+      messagingSenderId: "693770805211" 
+    })),
+    provideFirestore(() => getFirestore())
   ]
 };

@@ -2,16 +2,17 @@
 palveluita muille rakenneosille, yleensä komponenteille. Tämä
 service välittää dataa palvelimelta Angular-sovellukseen ja toisinpäin.
 */
-// HttpClient tarvitaan asynkroniseen datan hakemiseen serveriltä ja lähettämiseen serverille
-// provideHttpClient() pitää lisäksi muistaa ottaa käyttöön app.config.ts:ssä
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Contact } from './contact';
 /* Palvelimelta haettu data toimitetaan komponentille observablena
    Angular on reaktiivinen sovelluskehys joka käyttää observableja
    datan siirtämiseen paikasta toiseen. */
-import { Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Observable, from } from 'rxjs';
+import { map } from 'rxjs/operators';
+import {
+  Firestore, addDoc, collection, collectionData,
+  doc, docData, deleteDoc, updateDoc, DocumentReference, setDoc
+} from '@angular/fire/firestore';
 
 /* injectable annotaatio kertoo että service voidaan injektoida komponenttiin.
  providedIn: 'root' argumenttina tekee servicestä providerin */
@@ -20,56 +21,36 @@ import { catchError } from 'rxjs/operators';
 })
 export class ContactService {
 
-   apiurl = 'api/contacts'; // valepalvelimen eli in-memory-apin osoite
-  // apiurl = 'http://localhost:3000/contacts'; // oikean palvelimen osoite
+  constructor(private firestore: Firestore) { }
 
-  // tarvitaan määrittämään lähetysmuoto kun lähetetään dataa serverille
-  httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-  };
-
-  // HttpClient-olio tuodaan konstruktorissa serviceen
-  constructor(private http: HttpClient) { }
-
-  // Virheenkäsittelymetodi joka palauttaa observablen
-  private handleError(error: any): Observable<any> {
-    console.error('An error occurred', error);
-    return (error.message || error);
-  }
-
-  /* GET: getContacts() palauttaa Observablen.
-  HttpClient-olion get-metodilla haetaan Observable
-  annetusta osoitteesta. Observablen tyyppi on taulukko jossa on
-  Contact-tyyppisiä olioita.
-
-  Observable on "tarkkailtava" eli olio joka 'pushaa' datastreamia.
-  Vastaanottaja tilaa 'streamin'.
-  */
+  // Haetaan kaikki kontaktit Firestoresta
   getContacts(): Observable<Contact[]> {
-    return this.http.get<Contact[]>(this.apiurl);
-    // Voi tulla myös virhe kun haetaan dataa serveriltä
-    // tehdään myöhemmin tähän virheenkäsittely
+    const contactsRef = collection(this.firestore, 'contacts');
+    return collectionData(contactsRef, { idField: 'id' }) as Observable<Contact[]>;
   }
 
-  // POST: lähetetään http:n post-metodilla uusi kontakti serverille
+  // Lisätään uusi kontakti Firestoreen
   postContactToServer(newcontact: Contact): Observable<Contact> {
-    return this.http.post<Contact>(this.apiurl, newcontact, this.httpOptions);
-    // ilmoitus lähetyksen onnistumisesta ja virheenkäsittely tähän
-  }
-
-   /* PUT: Päivitetään kontakti id:n perusteella. */
-   updateContact(c: any): Observable<Contact> {
-    const url = `${this.apiurl}/${c.id}`;
-    return this.http.put<Contact>(url, c, this.httpOptions).pipe(
-      catchError(this.handleError)
+    const contactsRef = collection(this.firestore, 'contacts');
+    return from(addDoc(contactsRef, newcontact)).pipe(
+      map(docRef => {
+        // Spread the newcontact first, then override the id property
+        return { ...newcontact, id: docRef.id } as Contact;
+      })
     );
   }
 
-  /* DELETE: Poistetaan kontakti id:n perusteella. */
-  removeContact(id: number): Observable<Contact> {
-    const url = `${this.apiurl}/${id}`;
-    return this.http.delete<Contact>(url).pipe(
-      catchError(this.handleError)
+  // Päivitetään kontakti id:n perusteella
+  updateContact(c: any): Observable<Contact> {
+    const contactRef = doc(this.firestore, `contacts/${c.id}`);
+    return from(updateDoc(contactRef, { name: c.name, email: c.email })).pipe(
+      map(() => c as Contact)
     );
+  }
+
+  // Poistetaan kontakti id:n perusteella
+  removeContact(id: number | string): Observable<any> {
+    const contactRef = doc(this.firestore, `contacts/${id}`);
+    return from(deleteDoc(contactRef));
   }
 }
