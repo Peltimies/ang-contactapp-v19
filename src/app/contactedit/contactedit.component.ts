@@ -2,10 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { ContactService } from '../contact.service';
 import { Contact } from '../contact';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../auth.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-contactedit',
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './contactedit.component.html',
   styleUrls: ['./contactedit.component.css']
 })
@@ -18,8 +20,24 @@ export class ContacteditComponent implements OnInit {
   email = '';
   id: string | number = ''; // Muutettu tukemaan sekä string että number -tyyppejä Firestorea varten
   // Service otetaan käyttöön komponentin konstruktorin argumenttina (Dependency injection)
-  constructor(private contactService: ContactService) {
+
+
+
+
+  // Kirjautumiseen liittyvät propertyt
+  loginEmail = '';
+  loginPassword = '';
+  isLoggedIn = false;
+  loginError = '';
+  showLoginForm = true; // Näytetään kirjautumislomake oletuksena
+
+
+
+  constructor(private contactService: ContactService, private authService: AuthService) {
   }
+
+  
+
 
   // tilataan subscribe-metodilla observable servicen getContacts -metodista
   // subscriben argumenttina on callback jolla kontaktitaulukko saadaan
@@ -31,6 +49,32 @@ export class ContacteditComponent implements OnInit {
   ngOnInit() {
     this.getContacts(); // suoritetaan aina kun komponentti alustetaan
   }
+
+    // Kirjautuminen
+    signIn() {
+      this.loginError = ''; // Tyhjennetään mahdollinen aiempi virheviesti
+      
+      this.authService.signIn(this.loginEmail, this.loginPassword)
+        .then(() => {
+          this.isLoggedIn = true;
+          this.showLoginForm = false;
+          this.getContacts(); // Haetaan kontaktit kirjautumisen jälkeen
+        })
+        .catch(error => {
+          this.loginError = 'Kirjautuminen epäonnistui: ' + error.message;
+        });
+    }
+  
+    // Uloskirjautuminen
+    signOut() {
+      this.authService.signOut()
+        .then(() => {
+          this.isLoggedIn = false;
+          this.showLoginForm = true;
+          this.contacts = []; // Tyhjennetään kontaktilista uloskirjautumisen yhteydessä
+        });
+    }
+  
 
   // Lomakkeelta saadut tiedot contactServicen updateContact-metodille
   onSubmit(formData: any) {

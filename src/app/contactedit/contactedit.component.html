@@ -1,19 +1,50 @@
-<!-- Muokkaa-nappia painettaessa avautuu muokkauslomake-->
+<!-- Kirjautumistilan mukaan näytetään kirjautumislomake tai kontaktihallinta -->
 
-  @if(editmode === true) {
-  <div class ="topmargin">
-    <form #f="ngForm" (ngSubmit)="onSubmit(f.value)">
-      <label>Nimi:</label><br /> <input type="text" name="name" [(ngModel)]="name" ngModel /><br />
-      <label>Email:</label><br /> <input type="text" name="email" [(ngModel)]="email" ngModel /><br />
-      <input type="hidden" name="id" [(ngModel)]="id" ngModel />
-      <button class ="topmargin" type="submit">Lähetä</button>
-  </form>
+<!-- Kirjautumislomake näytetään, kun käyttäjä ei ole kirjautunut -->
+@if(!isLoggedIn && showLoginForm) {
+  <div class="login-container topmargin">
+    <h2>Kirjaudu sisään</h2>
+    @if(loginError) {
+      <div class="error">{{ loginError }}</div>
+    }
+    <form #loginForm="ngForm" (ngSubmit)="signIn()">
+      <div class="form-group">
+        <label>Sähköposti:</label><br />
+        <input type="email" name="email" [(ngModel)]="loginEmail" required /><br />
+      </div>
+      <div class="form-group">
+        <label>Salasana:</label><br />
+        <input type="password" name="password" [(ngModel)]="loginPassword" required /><br />
+      </div>
+      <button class="topmargin" type="submit">Kirjaudu</button>
+    </form>
   </div>
-  }
+}
 
-  @for( c of contacts; track c){
-    <div class="contact">
-      <p>{{ c.name }} - {{ c.email }} <a (click)="edit(c)">Muokkaa</a>&nbsp;<a (click)="remove(c)">Poista</a></p>
+<!-- Kontaktihallinta näytetään vain kirjautuneille käyttäjille -->
+@if(isLoggedIn) {
+  <div class="logged-in-container">
+    <div class="user-controls">
+      <button (click)="signOut()" class="logout-btn">Kirjaudu ulos</button>
     </div>
-  }
-  
+
+    <!-- Muokkaa-nappia painettaessa avautuu muokkauslomake-->
+    @if(editmode === true) {
+    <div class="topmargin">
+      <form #f="ngForm" (ngSubmit)="onSubmit(f.value)">
+        <label>Nimi:</label><br /> <input type="text" name="name" [(ngModel)]="name" ngModel /><br />
+        <label>Email:</label><br /> <input type="text" name="email" [(ngModel)]="email" ngModel /><br />
+        <input type="hidden" name="id" [(ngModel)]="id" ngModel />
+        <button class="topmargin" type="submit">Lähetä</button>
+      </form>
+    </div>
+    }
+
+    <h2>Yhteystiedot</h2>
+    @for(c of contacts; track c) {
+      <div class="contact">
+        <p>{{ c.name }} - {{ c.email }} <a (click)="edit(c)">Muokkaa</a>&nbsp;<a (click)="remove(c)">Poista</a></p>
+      </div>
+    }
+  </div>
+}
