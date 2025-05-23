@@ -11,6 +11,7 @@ import { routes } from './app.routes';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 
+import { environment } from '../environments/environment';
 
 export const appConfig: ApplicationConfig = {
   // providers-taulukko sisältää sovellukselle tarjottavat palvelut
@@ -19,14 +20,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     provideRouter(routes, withComponentInputBinding()),
     // Firebase configuration
-    provideFirebaseApp(() => initializeApp({ 
-      projectId: "ang-firebook-pelti", 
-      appId: "1:693770805211:web:cf456315cb151c625b51fe", 
-      storageBucket: "ang-firebook-pelti.firebasestorage.app", 
-      apiKey: "AIzaSyDSE2s8wlKwxbQzqhRPuHzs_DZkugNJisY", 
-      authDomain: "ang-firebook-pelti.firebaseapp.com", 
-      messagingSenderId: "693770805211" 
-    })),
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => getFirestore())
   ]
 };
