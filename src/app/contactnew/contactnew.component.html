@@ -1,4 +1,8 @@
 
+<div *ngIf="!authService.user">
+  <p>Kirjaudu sisään jotta voit lisätä kontakteja</p>
+ </div>
+
 <div *ngIf="(authService.user)">
   <div class ="topmargin">
     <!-- Tehdään Angularin template-driven form jonka nimi on #f. Tämä on 

@@ -1,0 +1,31 @@
+<div class="auth-container">
+  @if (isLoggedIn) {
+    <div class="logged-in-container">
+      <p>Olet kirjautunut sisään</p>
+      <button (click)="signOut()" class="btn btn-danger">Kirjaudu ulos</button>
+    </div>
+  } @else {
+    <div class="login-container">
+      @if (showLoginForm) {
+        <div>
+          <h3>Kirjaudu sisään</h3>
+          <div class="form-group">
+            <label for="email">Sähköposti:</label>
+            <input type="email" id="email" class="form-control" [(ngModel)]="loginEmail" required>
+          </div>
+          <div class="form-group">
+            <label for="password">Salasana:</label>
+            <input type="password" id="password" class="form-control" [(ngModel)]="loginPassword" required>
+          </div>
+          <div class="button-container">
+            <button (click)="signIn()" class="btn btn-primary">Kirjaudu sisään</button>
+            <button (click)="signUp()" class="btn btn-secondary">Rekisteröidy</button>
+          </div>
+          @if (loginError) {
+            <div class="alert alert-danger mt-2">{{loginError}}</div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>
