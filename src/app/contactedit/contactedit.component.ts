@@ -22,7 +22,6 @@ export class ContacteditComponent implements OnInit {
   // Rekisteröitymiseen liittyvät propertyt
   signupEmail = '';
   signupPassword = '';
-  signupError = '';
 
   // Propertyjen alustukset tehdään tässä esittelyn yhteydessä
   contacts: Contact[] = []; // komponentin kontaktitaulukko
@@ -73,9 +72,9 @@ export class ContacteditComponent implements OnInit {
 
   // käyttöliittymän autentikaatioon liittyvien nappien metodit
   signUp() {
-    this.authService.signUp(this.signupEmail, this.signupPassword);
-    this.signupEmail = '';
-    this.signupPassword = '';
+    this.authService.signUp(this.loginEmail, this.loginPassword);
+    this.loginEmail = '';
+    this.loginPassword = '';
   }
 
   signIn() {
