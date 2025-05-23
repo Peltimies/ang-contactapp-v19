@@ -1,6 +1,5 @@
-<h1 *ngIf="authService.user">Hello {{ (authService.user)?.email }}</h1>
 
-<div *ngIf="!(authService.user)">
+<div *ngIf="(authService.user)">
   <div class ="topmargin">
     <!-- Tehdään Angularin template-driven form jonka nimi on #f. Tämä on 
   ns. tavallinen Angularin lomake (toinen on reaktiivisen lomake). Bindataan 

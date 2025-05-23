@@ -1,10 +1,12 @@
+<!-- Muokkaa-nappia painettaessa avautuu muokkauslomake-->
 <!--h1 sisältö näkyy vain kirjautuneille. ? on Typescriptin conditional 
 chaining -operaattori. Jos sitä edeltävä tieto on undefined tai null,
 se estää virheilmoituksen
 -->
 <h1 *ngIf="authService.user">Hello {{ (authService.user)?.email }}</h1>
 
-<div *ngIf="!authService.user; else editview">
+<!--Lomake näkyy silloin kun käyttäjä ei ole kirjautunut-->
+<div *ngIf="!(authService.user)">
     <p>Tee Firebase-projekti johon valitset autentikaation.<br>
     Valitse projektissa Sign-in metodiksi email/password.<br> 
     Liitä tämä sovellus projektiin (environment.ts) ja kokeile.</p>
@@ -15,20 +17,23 @@ se estää virheilmoituksen
     <!--Kirjautumisnappi-->
     <button (click)="signIn()">Login</button>
 </div>
+<!--Logout-nappi näkyy vain kirjautuneille-->
+<button (click)="signOut()" *ngIf="authService.user">Logout</button>
 
-<ng-template #editview>
+@if( authService.user ) {
   <div class ="topmargin">
     <form #f="ngForm" (ngSubmit)="onSubmit(f.value)">
       <label>Nimi:</label><br /> <input type="text" name="name" [(ngModel)]="name" ngModel /><br />
       <label>Email:</label><br /> <input type="text" name="email" [(ngModel)]="email" ngModel /><br />
       <input type="hidden" name="id" [(ngModel)]="id" ngModel />
       <button class ="topmargin" type="submit">Lähetä</button>
-    </form>
+  </form>
   </div>
-</ng-template>
+  }
 
-@for( c of contacts; track c){
-  <div class="contact">
-    <p>{{ c.name }} - {{ c.email }} <a (click)="edit(c)">Muokkaa</a>&nbsp;<a (click)="remove(c)">Poista</a></p>
-  </div>
-}
+  @for( c of contacts; track c){
+    <div class="contact">
+      <p>{{ c.name }} - {{ c.email }} <a (click)="edit(c)">Muokkaa</a>&nbsp;<a (click)="remove(c)">Poista</a></p>
+    </div>
+  }
+  

@@ -42,7 +42,10 @@ export class ContacteditComponent implements OnInit {
   // subscriben argumenttina on callback jolla kontaktitaulukko saadaan
   getContacts(): void {
     this.contactService.getContacts()
-      .subscribe(contacts => this.contacts = contacts);
+      .subscribe(contacts => {
+        console.log('Contacts loaded:', contacts); // Add this line
+        this.contacts = contacts;
+      });
   }
 
   ngOnInit() {
@@ -87,26 +90,56 @@ export class ContacteditComponent implements OnInit {
   }
 
 
-  // Lomakkeelta saadut tiedot contactServicen updateContact-metodille
+  // Lomakkeelta saadut tiedot joko lisätään uutena tai päivitetään olemassa olevaa
   onSubmit(formData: any) {
-    this.contactService.updateContact({
-      'id': formData.id,
+    const contact = {
       'name': formData.name,
-      'email': formData.email,
-    /* Heti päivityksen jälkeen suoritetaan getContacts()-metodi
-       callbackissa subscriben argumenttina. Päivittyminen tapahtuu
-       tällöin välittömästi samalla sivulla */
-    }).subscribe(() => this.getContacts());
-    // tyhjennetään lomakkeen kentät kun päivitys on suoritettu
+      'email': formData.email
+    };
+    
+    // Jos id on tyhjä, kyseessä on uuden kontaktin lisäys
+    if (!formData.id) {
+      console.log('Lisätään uusi kontakti');
+      this.contactService.postContactToServer(contact as Contact)
+        .subscribe(() => {
+          console.log('Kontakti lisätty onnistuneesti');
+          this.getContacts();
+          // Tyhjennetään lomakkeen kentät
+          this.resetForm();
+          // Suljetaan muokkauslomake
+          this.editmode = false;
+        });
+    } 
+    // Jos id ei ole tyhjä, kyseessä on olemassa olevan kontaktin päivitys
+    else {
+      console.log('Päivitetään olemassa olevaa kontaktia');
+      this.contactService.updateContact({
+        'id': formData.id,
+        'name': formData.name,
+        'email': formData.email,
+      }).subscribe(() => {
+        console.log('Kontakti päivitetty onnistuneesti');
+        this.getContacts();
+        // Tyhjennetään lomakkeen kentät
+        this.resetForm();
+        // Suljetaan muokkauslomake
+        this.editmode = false;
+      });
+    }
+  }
+  
+  // Apumetodi lomakkeen kenttien tyhjentämiseen
+  resetForm() {
     this.name = '';
     this.email = '';
-    this.id = ''; // Resetoidaan id tyhjäksi stringiksi Firestore-yhteensopivuuden vuoksi
+    this.id = ''; // Resetoidaan id tyhjäksi stringiksi
   }
   /* Laitetaan muokkauslomake näkyviin ja laitetaan
      lomakkeelle arvot joita muokataan. Varsinainen muokkaus
      tapahtuu muokkauslomakkeelta laukaistavassa onSubmit-metodissa
   */ 
   edit(c: Contact) {
+    console.log('Edit clicked', c); // Add this line
     this.editmode = true;
     this.name = c.name;
     this.email = c.email;
