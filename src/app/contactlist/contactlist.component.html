@@ -1,21 +1,78 @@
+<div class="contacts-container">
+  <div class="page-header">
+    <h2>Kontaktilista</h2>
+    <p class="intro-text">Selaa ja etsi kontakteja. Voit suodattaa kontakteja nimen tai sähköpostin perusteella.</p>
+  </div>
 
-<p>
-  Haku:
-  <input type="text" (input)="searchContacts($event)" />
-  Kriteeri:
-  <select (change)="onSelect($event)">
-    @for( field of fields; track field){
-    <option value="{{ field }}">{{ field }}</option>
+  <div class="search-box">
+    <div class="search-input-group">
+      <label for="searchInput">Haku:</label>
+      <input 
+        type="text" 
+        id="searchInput" 
+        placeholder="Kirjoita hakusana..." 
+        (input)="searchContacts($event)" 
+        class="search-input"
+      />
+    </div>
+    
+    <div class="search-select-group">
+      <label for="criteriaSelect">Hakukriteeri:</label>
+      <select 
+        id="criteriaSelect" 
+        (change)="onSelect($event)" 
+        class="search-select"
+      >
+        @for(field of fields; track field) {
+          <option value="{{ field }}">{{ field === 'name' ? 'Nimi' : 'Sähköposti' }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <!-- Hakutuloslaskuri -->
+  <div class="results-counter">
+    <p>
+      @if(field === 'name') {
+        {{ namefilter().length }} hakutulosta
+      } @else if(field === 'email') {
+        {{ emailfilter().length }} hakutulosta
+      }
+    </p>
+  </div>
+
+  <!-- Kontaktilista -->
+  <div class="contacts-list">
+    @if(field === 'name') {
+      @if(namefilter().length === 0) {
+        <div class="no-results">
+          <p>Ei hakutuloksia</p>
+        </div>
+      } @else {
+        @for(contact of namefilter(); track contact) {
+          <div class="contact-card">
+            <div class="contact-info">
+              <h3>{{ contact.name }}</h3>
+              <p class="email">{{ contact.email }}</p>
+            </div>
+          </div>
+        }
+      }
+    } @else if(field === 'email') {
+      @if(emailfilter().length === 0) {
+        <div class="no-results">
+          <p>Ei hakutuloksia</p>
+        </div>
+      } @else {
+        @for(contact of emailfilter(); track contact) {
+          <div class="contact-card">
+            <div class="contact-info">
+              <h3>{{ contact.name }}</h3>
+              <p class="email">{{ contact.email }}</p>
+            </div>
+          </div>
+        }
+      }
     }
-  </select>
-</p>
-<!-- Valitaan hakufiltteri kriteerin arvon perusteella -->
-@if(field === 'name'){ @for( c of namefilter(); track c){
-<div class="contact">
-  <p>{{ c.name }} - {{ c.email }}</p>
+  </div>
 </div>
-} } @if(field === 'email'){ @for( c of emailfilter(); track c){
-<div class="contact">
-  <p>{{ c.name }} - {{ c.email }}</p>
-</div>
-} }

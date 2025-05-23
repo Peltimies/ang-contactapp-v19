@@ -26,9 +26,7 @@ export class AuthService {
       .then(res => {
         console.log('Successfully signed up!', res);
         this.user = res.user;
-      })
-      .catch(error => {
-        console.log('Something is wrong:', error.message);
+        return res; // Palautetaan vastaus, jotta promise-ketjua voidaan jatkaa
       });
   }
 
@@ -41,9 +39,8 @@ export class AuthService {
     return signInWithEmailAndPassword(this.auth, email, password)
     .then(res => {
       console.log('Successfully signed in!', res);
-        this.user = res.user;
-    }).catch (error => {
-      console.log('Something is wrong:', error.message);
+      this.user = res.user;
+      return res; // Palautetaan vastaus, jotta promise-ketjua voidaan jatkaa
     });
   }
 

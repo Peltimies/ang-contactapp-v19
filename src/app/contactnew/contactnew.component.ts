@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ContactService } from '../contact.service';
-import { Router } from '@angular/router'; // tarvitaan navigateToList() -metodia varten
+import { Router, RouterLink } from '@angular/router'; // RouterLink lisätty routerLink-direktiiviä varten
 import { AuthService } from '../auth.service';
 import { CommonModule } from '@angular/common';
 import { Contact } from '../contact';
@@ -8,7 +8,7 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-contactnew',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, RouterLink],
   templateUrl: './contactnew.component.html',
   styleUrls: ['./contactnew.component.css'],
 })

@@ -1,12 +1,61 @@
 nav {
-    font-family: verdana, arial;
-    color: #efefef;
-    background-color: black;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 15px;
+  background-color: #222;
+  color: #fff;
+  border-radius: 4px;
+  margin: 10px 0 20px 0;
+}
+
+nav a {
+  color: #FFFFFF;
+  text-decoration: none;
+  padding: 8px 12px;
+  margin: 0 5px;
+  border-radius: 4px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+nav a:hover {
+  background-color: #444;
+  color: #fff;
+}
+
+/* Hamburger menu for mobile */
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  nav {
+    flex-direction: column;
+    align-items: center;
   }
-  a {
-    color: #FFFFFF;
-    text-decoration:none;
+  
+  nav a {
+    margin: 5px 0;
+    text-align: center;
+    width: 100%;
   }
-  a:hover {
-    color: #C0C0C0;
+}
+
+@media (max-width: 480px) {
+  nav {
+    padding: 10px;
   }
+  
+  nav a {
+    padding: 6px 10px;
+    font-size: 0.9rem;
+    display: block;
+    width: 100%;
+  }
+}

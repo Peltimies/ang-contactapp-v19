@@ -4,11 +4,11 @@ import { Contact } from '../contact';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { CommonModule } from '@angular/common';
-import { AuthComponent } from '../auth/auth.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-contactedit',
-  imports: [FormsModule, CommonModule, AuthComponent],
+  imports: [FormsModule, CommonModule, RouterLink],
   templateUrl: './contactedit.component.html',
   styleUrls: ['./contactedit.component.css']
 })

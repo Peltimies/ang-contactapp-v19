@@ -1,20 +1,65 @@
-
-<div *ngIf="!authService.user">
-  <p>Kirjaudu sisään jotta voit lisätä kontakteja</p>
- </div>
-
-<div *ngIf="(authService.user)">
-  <div class ="topmargin">
-    <!-- Tehdään Angularin template-driven form jonka nimi on #f. Tämä on 
-  ns. tavallinen Angularin lomake (toinen on reaktiivisen lomake). Bindataan 
-  (ngSubmit) -event luokassa oleviin onSubmit() ja navigateToList() -metodeihin 
-  eli kun lomake lähetetään, niin nämä metodit suoritetaan. Pitää muistaa lisäksi importata
-  FormsModule päämoduuliin  -->
-    <form #f="ngForm" (ngSubmit)="onSubmit(f.value); navigateToList()">
-      <label>Nimi:</label><br /> <input type="text" name="name" ngModel /><br />
-      <label>Email:</label><br /> <input type="text" name="email" ngModel /><br />
-      <button class ="topmargin" type="submit">Lähetä</button>
-  </form>
+<div class="container">
+  <!-- Ei-kirjautuneen käyttäjän näkymä -->
+  <div *ngIf="!authService.user" class="auth-required">
+    <div class="auth-message">
+      <h2>Kirjautuminen vaaditaan</h2>
+      <p>Sinun täytyy kirjautua sisään, jotta voit lisätä uusia kontakteja.</p>
+      <a routerLink="/auth" class="login-link">Siirry kirjautumissivulle</a>
+    </div>
   </div>
 
+  <!-- Kirjautuneen käyttäjän näkymä -->
+  <div *ngIf="authService.user" class="new-contact-container">
+    <div class="page-header">
+      <h2>Lisää uusi kontakti</h2>
+      <p class="welcome-message">Tervetuloa, <span class="user-email">{{ authService.user.email }}</span>!</p>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="form-description">
+          <p>Täytä alla olevat tiedot lisätäksesi uuden kontaktin. Kaikki kentät ovat pakollisia.</p>
+        </div>
+        
+        <!-- Uuden kontaktin lomake -->
+        <form #f="ngForm" (ngSubmit)="onSubmit(f.value); navigateToList()" class="contact-form">
+          <div class="form-group">
+            <label for="nameInput">Nimi:</label>
+            <input 
+              type="text" 
+              id="nameInput"
+              name="name" 
+              ngModel 
+              placeholder="Syötä nimi"
+              required
+            />
+            <div class="form-hint">Esim. Matti Meikäläinen</div>
+          </div>
+          
+          <div class="form-group">
+            <label for="emailInput">Sähköposti:</label>
+            <input 
+              type="email" 
+              id="emailInput"
+              name="email" 
+              ngModel 
+              placeholder="Syötä sähköpostiosoite"
+              required
+            />
+            <div class="form-hint">Esim. matti.meikalainen&#64;esimerkki.fi</div>
+          </div>
+          
+          <div class="form-actions">
+            <button type="submit" class="btn-submit">Lisää kontakti</button>
+            <button type="button" class="btn-cancel" (click)="navigateToList()">Peruuta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="form-help">
+      <h4>Ohje</h4>
+      <p>Kontaktin lisäämisen jälkeen sinut ohjataan automaattisesti kontaktilistaan. Voit muokata kontaktia myöhemmin "Muokkaa kontakteja" -sivulla.</p>
+    </div>
+  </div>
 </div>

@@ -1,22 +1,87 @@
-<!-- Käytetään auth-komponenttia kirjautumistoimintoihin -->
- <div *ngIf="!authService.user">
-  <p>Kirjaudu sisään jotta voit muokata kontakteja</p>
- </div>
-<div *ngIf="authService.user">
-      <div class ="topmargin">
-    <form #f="ngForm" (ngSubmit)="onSubmit(f.value)">
-      <label>Nimi:</label><br /> <input type="text" name="name" [(ngModel)]="name" ngModel /><br />
-      <label>Email:</label><br /> <input type="text" name="email" [(ngModel)]="email" ngModel /><br />
-      <input type="hidden" name="id" [(ngModel)]="id" ngModel />
-      <button type="button" class ="topmargin" type="submit">Lähetä</button>
-  </form>
+<div class="container">
+  <!-- Ei-kirjautuneen käyttäjän näkymä -->
+  <div *ngIf="!authService.user" class="auth-required">
+    <div class="auth-message">
+      <h2>Kirjautuminen vaaditaan</h2>
+      <p>Sinun täytyy kirjautua sisään, jotta voit muokata kontakteja.</p>
+      <a routerLink="/auth" class="login-link">Siirry kirjautumissivulle</a>
+    </div>
   </div>
 
-
-  @for( c of contacts; track c){
-    <div class="contact">
-      <p>{{ c.name }} - {{ c.email }} <a (click)="edit(c)">Muokkaa</a>&nbsp;<a (click)="remove(c)">Poista</a></p>
+  <!-- Kirjautuneen käyttäjän näkymä -->
+  <div *ngIf="authService.user" class="edit-container">
+    <div class="page-header">
+      <h2>Kontaktien muokkaus</h2>
+      <p class="welcome-message">Tervetuloa, <span class="user-email">{{ authService.user.email }}</span>!</p>
     </div>
-  }
-  
+
+    <!-- Muokkauslomake -->
+    <div class="edit-form-container" [class.active]="editmode">
+      <h3>{{ id ? 'Muokkaa kontaktia' : 'Lisää uusi kontakti' }}</h3>
+      <form #f="ngForm" (ngSubmit)="onSubmit(f.value)" class="contact-form">
+        <div class="form-group">
+          <label for="nameInput">Nimi:</label>
+          <input 
+            type="text" 
+            id="nameInput"
+            name="name" 
+            [(ngModel)]="name" 
+            ngModel 
+            placeholder="Syötä nimi"
+            required
+          />
+        </div>
+        
+        <div class="form-group">
+          <label for="emailInput">Sähköposti:</label>
+          <input 
+            type="email" 
+            id="emailInput"
+            name="email" 
+            [(ngModel)]="email" 
+            ngModel 
+            placeholder="Syötä sähköpostiosoite"
+            required
+          />
+        </div>
+        
+        <input type="hidden" name="id" [(ngModel)]="id" ngModel />
+        
+        <div class="form-actions">
+          <button type="submit" class="btn-submit">{{ id ? 'Päivitä' : 'Lisää' }}</button>
+          <button type="button" class="btn-cancel" *ngIf="editmode" (click)="resetForm(); editmode = false;">Peruuta</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Kontaktilista -->
+    <div class="contacts-section">
+      <h3>Kontaktit</h3>
+      
+      @if(contacts.length === 0) {
+        <div class="no-contacts">
+          <p>Ei kontakteja. Lisää ensimmäinen kontakti yllä olevalla lomakkeella.</p>
+        </div>
+      } @else {
+        <div class="contacts-list">
+          @for(contact of contacts; track contact) {
+            <div class="contact-card">
+              <div class="contact-info">
+                <h4>{{ contact.name }}</h4>
+                <p class="email">{{ contact.email }}</p>
+              </div>
+              <div class="contact-actions">
+                <button class="btn-edit" (click)="edit(contact)" title="Muokkaa">
+                  <i class="edit-icon">✎</i> Muokkaa
+                </button>
+                <button class="btn-delete" (click)="remove(contact)" title="Poista">
+                  <i class="delete-icon">✕</i> Poista
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
 </div>
