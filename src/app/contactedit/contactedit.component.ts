@@ -19,24 +19,22 @@ export class ContacteditComponent implements OnInit {
   name = '';
   email = '';
   id: string | number = ''; // Muutettu tukemaan sekä string että number -tyyppejä Firestorea varten
-  // Service otetaan käyttöön komponentin konstruktorin argumenttina (Dependency injection)
-
-
-
-
+  
   // Kirjautumiseen liittyvät propertyt
   loginEmail = '';
   loginPassword = '';
   isLoggedIn = false;
   loginError = '';
   showLoginForm = true; // Näytetään kirjautumislomake oletuksena
+  
+  // Rekisteröitymiseen liittyvät propertyt
+  signupEmail = '';
+  signupPassword = '';
+  signupError = '';
 
-
-
+  // Service otetaan käyttöön komponentin konstruktorin argumenttina (Dependency injection)
   constructor(private contactService: ContactService, private authService: AuthService) {
   }
-
-  
 
 
   // tilataan subscribe-metodilla observable servicen getContacts -metodista
@@ -47,7 +45,26 @@ export class ContacteditComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getContacts(); // suoritetaan aina kun komponentti alustetaan
+    console.log('ngOnInit called');
+    // Tarkistetaan onko käyttäjä jo kirjautunut ja asetetaan kirjautumistila
+    // Firebase tallentaa kirjautumistilan, joten edellinen kirjautuminen voi olla vielä voimassa
+    // kun sovellus käynnistetään uudelleen
+    this.checkLoginStatus();
+  }
+
+  // Tarkistaa kirjautumistilan
+  checkLoginStatus() {
+    console.log('Checking login status, auth user:', this.authService.user);
+    if (this.authService.user) {
+      console.log('User is logged in');
+      this.isLoggedIn = true;
+      this.showLoginForm = false;
+      this.getContacts(); // Haetaan kontaktit vain jos käyttäjä on kirjautunut
+    } else {
+      console.log('User is not logged in');
+      this.isLoggedIn = false;
+      this.showLoginForm = true;
+    }
   }
 
     // Kirjautuminen
@@ -67,11 +84,33 @@ export class ContacteditComponent implements OnInit {
   
     // Uloskirjautuminen
     signOut() {
+      console.log('Signing out');
       this.authService.signOut()
         .then(() => {
+          console.log('Successfully signed out');
+          // Asetetaan authService.user null-arvoksi, koska signOut() ei automaattisesti päivitä user-kenttää
+          this.authService.user = null;
           this.isLoggedIn = false;
           this.showLoginForm = true;
           this.contacts = []; // Tyhjennetään kontaktilista uloskirjautumisen yhteydessä
+        })
+        .catch(error => {
+          console.error('Error signing out:', error);
+        });
+    }
+
+    // Rekisteröityminen
+    signUp() {
+      this.signupError = ''; // Tyhjennetään mahdollinen aiempi virheviesti
+      
+      this.authService.signUp(this.signupEmail, this.signupPassword)
+        .then(() => {
+          this.isLoggedIn = true;
+          this.showLoginForm = false;
+          this.getContacts(); // Haetaan kontaktit rekisteröitymisen jälkeen
+        })
+        .catch(error => {
+          this.signupError = 'Rekisteröityminen epäonnistui: ' + error.message;
         });
     }
   
