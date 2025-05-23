@@ -25,6 +25,7 @@ export class ContactService {
 
   // Haetaan kaikki kontaktit Firestoresta
   getContacts(): Observable<Contact[]> {
+    console.log('Haetaan kaikki kontaktit Firestoresta');
     const contactsRef = collection(this.firestore, 'contacts');
     return collectionData(contactsRef, { idField: 'id' }) as Observable<Contact[]>;
   }
@@ -32,6 +33,7 @@ export class ContactService {
   // Lisätään uusi kontakti Firestoreen
   postContactToServer(newcontact: Contact): Observable<Contact> {
     const contactsRef = collection(this.firestore, 'contacts');
+    // palautetaan 
     return from(addDoc(contactsRef, newcontact)).pipe(
       map(docRef => {
         // Spread the newcontact first, then override the id property
