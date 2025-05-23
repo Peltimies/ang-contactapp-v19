@@ -12,17 +12,9 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./contactedit.component.css']
 })
 export class ContacteditComponent implements OnInit {
-
-  // Propertyjen alustukset tehdään tässä esittelyn yhteydessä
-  contacts: Contact[] = []; // komponentin kontaktitaulukko
-  editmode: boolean = false; // muokkauslomake oletuksena ei näkyvissä
-  name = '';
-  email = '';
-  id: string | number = ''; // Muutettu tukemaan sekä string että number -tyyppejä Firestorea varten
-  
+  loginEmail!: string;
+  loginPassword!: string;
   // Kirjautumiseen liittyvät propertyt
-  loginEmail = '';
-  loginPassword = '';
   isLoggedIn = false;
   loginError = '';
   showLoginForm = true; // Näytetään kirjautumislomake oletuksena
@@ -32,8 +24,17 @@ export class ContacteditComponent implements OnInit {
   signupPassword = '';
   signupError = '';
 
+  // Propertyjen alustukset tehdään tässä esittelyn yhteydessä
+  contacts: Contact[] = []; // komponentin kontaktitaulukko
+  editmode: boolean = false; // muokkauslomake oletuksena ei näkyvissä
+  name = '';
+  email = '';
+  id: string | number = ''; // Muutettu tukemaan sekä string että number -tyyppejä Firestorea varten
+  
+  
+
   // Service otetaan käyttöön komponentin konstruktorin argumenttina (Dependency injection)
-  constructor(private contactService: ContactService, private authService: AuthService) {
+  constructor(private contactService: ContactService, public authService: AuthService) {
   }
 
 
@@ -67,53 +68,24 @@ export class ContacteditComponent implements OnInit {
     }
   }
 
-    // Kirjautuminen
-    signIn() {
-      this.loginError = ''; // Tyhjennetään mahdollinen aiempi virheviesti
-      
-      this.authService.signIn(this.loginEmail, this.loginPassword)
-        .then(() => {
-          this.isLoggedIn = true;
-          this.showLoginForm = false;
-          this.getContacts(); // Haetaan kontaktit kirjautumisen jälkeen
-        })
-        .catch(error => {
-          this.loginError = 'Kirjautuminen epäonnistui: ' + error.message;
-        });
-    }
-  
-    // Uloskirjautuminen
-    signOut() {
-      console.log('Signing out');
-      this.authService.signOut()
-        .then(() => {
-          console.log('Successfully signed out');
-          // Asetetaan authService.user null-arvoksi, koska signOut() ei automaattisesti päivitä user-kenttää
-          this.authService.user = null;
-          this.isLoggedIn = false;
-          this.showLoginForm = true;
-          this.contacts = []; // Tyhjennetään kontaktilista uloskirjautumisen yhteydessä
-        })
-        .catch(error => {
-          console.error('Error signing out:', error);
-        });
-    }
+  // käyttöliittymän autentikaatioon liittyvien nappien metodit
+  signUp() {
+    this.authService.signUp(this.signupEmail, this.signupPassword);
+    this.signupEmail = '';
+    this.signupPassword = '';
+  }
 
-    // Rekisteröityminen
-    signUp() {
-      this.signupError = ''; // Tyhjennetään mahdollinen aiempi virheviesti
-      
-      this.authService.signUp(this.signupEmail, this.signupPassword)
-        .then(() => {
-          this.isLoggedIn = true;
-          this.showLoginForm = false;
-          this.getContacts(); // Haetaan kontaktit rekisteröitymisen jälkeen
-        })
-        .catch(error => {
-          this.signupError = 'Rekisteröityminen epäonnistui: ' + error.message;
-        });
-    }
-  
+  signIn() {
+    this.authService.signIn(this.loginEmail, this.loginPassword);
+    this.loginEmail = '';
+    this.loginPassword = '';
+  }
+
+  signOut() {
+    this.authService.signOut().then(() => this.authService.user = null)
+    .catch((e) => console.log(e.message));;
+  }
+
 
   // Lomakkeelta saadut tiedot contactServicen updateContact-metodille
   onSubmit(formData: any) {

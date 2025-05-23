@@ -1,88 +1,34 @@
-<!-- Kirjautumistilan mukaan näytetään kirjautumislomake tai kontaktihallinta -->
+<!--h1 sisältö näkyy vain kirjautuneille. ? on Typescriptin conditional 
+chaining -operaattori. Jos sitä edeltävä tieto on undefined tai null,
+se estää virheilmoituksen
+-->
+<h1 *ngIf="authService.user">Hello {{ (authService.user)?.email }}</h1>
 
-<!-- Kirjautumislomake näytetään, kun käyttäjä ei ole kirjautunut -->
-@if(!isLoggedIn && showLoginForm) {
-  <div class="login-container topmargin">
-    <h2>Kirjaudu sisään</h2>
-    @if(loginError) {
-      <div class="error">{{ loginError }}</div>
-    }
-    <form #loginForm="ngForm" (ngSubmit)="signIn()">
-      <div class="form-group">
-        <label>Sähköposti:</label><br />
-        <input type="email" name="email" [(ngModel)]="loginEmail" required /><br />
-      </div>
-      <div class="form-group">
-        <label>Salasana:</label><br />
-        <input type="password" name="password" [(ngModel)]="loginPassword" required /><br />
-      </div>
-      <button class="topmargin" type="submit">Kirjaudu</button>
+<div *ngIf="!authService.user; else editview">
+    <p>Tee Firebase-projekti johon valitset autentikaation.<br>
+    Valitse projektissa Sign-in metodiksi email/password.<br> 
+    Liitä tämä sovellus projektiin (environment.ts) ja kokeile.</p>
+    <input type="text" [(ngModel)]="loginEmail" placeholder="email">
+    <input type="password" [(ngModel)]="loginPassword" placeholder="password">
+    <!--rekisteröitymisnappi-->
+    <button (click)="signUp()">Sign Up</button>
+    <!--Kirjautumisnappi-->
+    <button (click)="signIn()">Login</button>
+</div>
+
+<ng-template #editview>
+  <div class ="topmargin">
+    <form #f="ngForm" (ngSubmit)="onSubmit(f.value)">
+      <label>Nimi:</label><br /> <input type="text" name="name" [(ngModel)]="name" ngModel /><br />
+      <label>Email:</label><br /> <input type="text" name="email" [(ngModel)]="email" ngModel /><br />
+      <input type="hidden" name="id" [(ngModel)]="id" ngModel />
+      <button class ="topmargin" type="submit">Lähetä</button>
     </form>
-    <p>Eikö sinulla ole vielä tiliä? <a (click)="showLoginForm = false">Rekisteröidy</a></p>
   </div>
-}
+</ng-template>
 
-     <!-- Rekisteröityminen -->
-     @if(!isLoggedIn && !showLoginForm) {
-      <div class="login-container topmargin">
-        <h2>Rekisteröidy</h2>
-        @if(signupError) {
-          <div class="error">{{ signupError }}</div>
-        }
-        <form #signupForm="ngForm" (ngSubmit)="signUp()">
-          <div class="form-group">
-            <label>Sähköposti:</label><br />
-            <input type="email" name="email" [(ngModel)]="signupEmail" required /><br />
-          </div>
-          <div class="form-group">
-            <label>Salasana:</label><br />
-            <input type="password" name="password" [(ngModel)]="signupPassword" required /><br />
-          </div>
-          <button class="topmargin" type="submit">Rekisteröidy</button>
-        </form>
-        <p>Onko sinulla jo tili? <a (click)="showLoginForm = true">Kirjaudu sisään</a></p>
-      </div>
-    }
-
-
-
-<!-- Kontaktihallinta näytetään vain kirjautuneille käyttäjille -->
-@if(isLoggedIn) {
-  <div class="logged-in-container">
-    <div class="user-controls">
-      <button (click)="signOut()" class="logout-btn">Kirjaudu ulos</button>
-    </div>
-
-    <!-- Jos ei olla muokkaustilassa, näytetään nappi uuden kontaktin lisäämiseen -->
-    @if(!editmode) {
-      <div class="topmargin">
-        <button (click)="edit({id: '', name: '', email: ''})" class="add-btn">Lisää uusi kontakti</button>
-      </div>
-    }
-
-    <!-- Muokkaa-nappia painettaessa avautuu muokkauslomake-->
-    @if(editmode === true) {
-    <div class="topmargin">
-      <h3>{{ id ? 'Muokkaa kontaktia' : 'Lisää uusi kontakti' }}</h3>
-      <form #f="ngForm" (ngSubmit)="onSubmit(f.value)">
-        <label>Nimi:</label><br /> <input type="text" name="name" [(ngModel)]="name" ngModel /><br />
-        <label>Email:</label><br /> <input type="text" name="email" [(ngModel)]="email" ngModel /><br />
-        <input type="hidden" name="id" [(ngModel)]="id" ngModel />
-        <button class="topmargin" type="submit">Tallenna</button>
-        <button class="topmargin" type="button" (click)="editmode = false">Peruuta</button>
-      </form>
-    </div>
-    }
-    
-    <h2>Yhteystiedot</h2>
-    @if(contacts.length === 0) {
-      <p>Ei yhteystietoja. Lisää uusi kontakti yllä olevasta napista.</p>
-    } @else {
-      @for(c of contacts; track c) {
-        <div class="contact">
-          <p>{{ c.name }} - {{ c.email }} <a (click)="edit(c)">Muokkaa</a>&nbsp;<a (click)="remove(c)">Poista</a></p>
-        </div>
-      }
-    }
+@for( c of contacts; track c){
+  <div class="contact">
+    <p>{{ c.name }} - {{ c.email }} <a (click)="edit(c)">Muokkaa</a>&nbsp;<a (click)="remove(c)">Poista</a></p>
   </div>
 }

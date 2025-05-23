@@ -1,18 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { ContactService } from '../contact.service';
 import { Router } from '@angular/router'; // tarvitaan navigateToList() -metodia varten
-
+import { AuthService } from '../auth.service';
+import { CommonModule } from '@angular/common';
 import { Contact } from '../contact';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-contactnew',
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './contactnew.component.html',
   styleUrls: ['./contactnew.component.css'],
 })
 export class ContactnewComponent implements OnInit {
-  constructor(private contactService: ContactService, private router: Router) {}
+  constructor(private contactService: ContactService, private router: Router, public authService: AuthService) {}
 
   ngOnInit() {}
 
