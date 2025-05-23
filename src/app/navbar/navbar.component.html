@@ -1,3 +1,13 @@
 <nav>
-  <a routerLink="/">Kontaktilista</a> <a routerLink="/new">Uusi kontakti</a> <a routerLink="/edit">Muokkaa kontakteja</a>
+  <div class="nav-container">
+    <div class="nav-links">
+      <a routerLink="/">Kontaktilista</a>
+      <a routerLink="/new">Uusi kontakti</a>
+      <a routerLink="/edit">Muokkaa kontakteja</a>
+    </div>
+    
+    <div class="user-actions" *ngIf="authService.user">
+      <button class="logout-btn" (click)="logout()">Kirjaudu ulos</button>
+    </div>
+  </div>
 </nav>

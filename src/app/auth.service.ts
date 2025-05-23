@@ -46,7 +46,12 @@ export class AuthService {
 
   /* Sign out */
   signOut() {
-    return signOut(this.auth);
+    return signOut(this.auth)
+      .then(() => {
+        console.log('Uloskirjautuminen onnistui');
+        this.user = null; // Tyhjennetään käyttäjätieto
+        return;
+      });
   }
 
 }

@@ -3,7 +3,7 @@ app.config.ts on koko sovelluksen konfiguraatiotiedosto, jossa otetaan käyttö�
 tarjotaan koko sovellukselle (provide) esim. reititys ja in-memory-web-api. Modulaarisessa
 sovelluksessa nämä määritykset voivat olla myös päämoduulissa ja reittimoduulissa.
 */
-import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection, isDevMode } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { routes } from './app.routes';
@@ -13,6 +13,7 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 
 import { environment } from '../environments/environment';
+import { provideServiceWorker } from '@angular/service-worker';
 
 export const appConfig: ApplicationConfig = {
   // providers-taulukko sisältää sovellukselle tarjottavat palvelut
@@ -23,6 +24,9 @@ export const appConfig: ApplicationConfig = {
     // Firebase configuration
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => getFirestore()),
-    provideAuth(() => getAuth())
+    provideAuth(() => getAuth()), provideServiceWorker('ngsw-worker.js', {
+            enabled: !isDevMode(),
+            registrationStrategy: 'registerWhenStable:30000'
+          })
   ]
 };
